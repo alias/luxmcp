@@ -1,0 +1,7 @@
+target/
+.idea/
+*.iml
+*.log
+luxmcp-writes.log
+.claude/settings.local.json
+docs/manuals/

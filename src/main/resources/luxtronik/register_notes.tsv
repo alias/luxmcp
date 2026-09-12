@@ -1,0 +1,146 @@
+# Curated notes for the registers that matter most. Merged into the register descriptions at startup.
+# Format: <register name><TAB><note>. Notes bridge python-luxtronik names and the Luxtronik menu / manual vocabulary.
+# Menu paths refer to the Luxtronik 2.1 display: Heizung, Trinkwarmwasser, Kuehlung, Service > Informationen / Einstellungen.
+#
+# ---- parameters: operating modes ----
+ID_Ba_Hz_akt	Menu Heizung > Betriebsart. Automatic = per heating curve and time program; Second heatsource = ZWE only (heat pump off); Party = day mode without night setback; Holidays = night setback until end date; Off = heating off, frost protection stays active.
+ID_Ba_Bw_akt	Menu Trinkwarmwasser > Betriebsart (hot water). Same options as heating: Automatic, Second heatsource (ZWE only), Party (continuous), Holidays (blocked), Off.
+ID_Einst_BA_Kuehl_akt	Menu Kuehlung > Betriebsart. Automatic = cooling released per Kuehlfreigabe rules (outdoor temperature / setpoint), Off = never cool. Passive cooling on SWC ...K3 models.
+ID_Ba_Sw_akt	Menu Schwimmbad > Betriebsart (pool heating), only relevant with pool option.
+ID_Einst_Solar_akt	Solar operating mode, only with solar option.
+ID_Einst_BA_Lueftung_akt	Ventilation operating mode, only with ventilation option.
+# ---- parameters: heating ----
+ID_Einst_WK_akt	Menu Heizung > Temperatur +/- ("Temperaturabweichung"). Fine adjustment of the return setpoint in 0.5 K steps; the controller shifts the heating curve autoadaptively. Manual: change by 0.5 K, then wait 2-3 days before changing again.
+ID_Einst_HzHwHKE_akt	Menu Heizung > Heizkurven > Heizkreis > Heizkurven-Endpunkt: return setpoint at -20 °C outdoor (e.g. 45 °C radiators, 30 °C underfloor). Values refer to the RETURN; flow = return + spread.
+ID_Einst_HzHKRANH_akt	Menu Heizung > Heizkurven > Heizkreis > Parallelverschiebung: return setpoint at +20 °C outdoor, i.e. the curve foot point (20 °C = neutral; 22 shifts the whole curve 2 K up).
+ID_Einst_HzHKRABS_akt	Menu Heizung > Heizkurven > Heizkreis > Nachtabsenkung / Differenztemperatur: how far the return setpoint is lowered in night mode (time program), negative K. Also Service > Einstellungen > Temperaturen > Nachtabsenkung HK.
+ID_Einst_HzMK1E_akt	Heizkurven > Mischkreis 1 > Heizkurven-Endpunkt (flow setpoint of mixing circuit 1 at -20 °C outdoor).
+ID_Einst_HzMK1ANH_akt	Heizkurven > Mischkreis 1 > Parallelverschiebung (foot point at +20 °C outdoor).
+ID_Einst_HzMK1ABS_akt	Heizkurven > Mischkreis 1 > Nachtabsenkung (negative K).
+ID_Einst_HzMK2E_akt	Heizkurven > Mischkreis 2 > Heizkurven-Endpunkt.
+ID_Einst_HzMK2ANH_akt	Heizkurven > Mischkreis 2 > Parallelverschiebung.
+ID_Einst_HzMK2ABS_akt	Heizkurven > Mischkreis 2 > Nachtabsenkung.
+ID_Einst_HzFtRl_akt	Festtemperatur Heizkreis: fixed return setpoint (raw /10 °C) used when Heizkurven > Festtemperatur is selected instead of a curve.
+ID_Einst_HzFtMK1Vl_akt	Festtemperatur Mischkreis 1: fixed flow setpoint (raw /10 °C).
+ID_Einst_Heizgrenze	Systemeinstellung > Heizgrenze Ja/Nein (1 = enabled). With it enabled, heating stops when the 24 h average outdoor temperature (Mitteltemperatur) exceeds ID_Einst_Heizgrenze_Temp; hysteresis 0.2 K.
+ID_Einst_Heizgrenze_Temp	Menu Heizung > Heizgrenze: 24 h average outdoor temperature above which heating is switched off (summer shutdown). Not marked writeable upstream.
+ID_Einst_HRHyst_akt	Service > Einstellungen > Temperaturen > Hysterese HR: heating controller hysteresis in K around the return setpoint (larger for fast systems, smaller for sluggish underfloor systems).
+ID_Einst_TRErhmax_akt	Temperaturen > TR Erh max: maximum permitted overshoot of the return temperature above setpoint in K; when exceeded all heat generators are switched off ignoring minimum run times. Must be greater than Hysterese HR.
+ID_Einst_Minimale_Ruecklaufsolltemperatur	Temperaturen > Min. Rueckl. Solltemp.: return setpoint never goes below this value.
+ID_Einst_HzHwMAt_akt	Temperaturen > Absenk. bis: outdoor temperature (raw /10 °C) below which the night setback is ignored.
+ID_Einst_SuHkr_akt	Heizung > Zeitschaltprogramm: which time program is active for the heating circuit (week / 5+2 / days). The ID_Einst_SuHkr*_zeit_* registers hold the switching times (day mode = raised, otherwise night setback).
+ID_Einst_TVL_Ahz_1	Ausheizprogramm (screed heat-up program) temperature stages, raw /10 °C.
+# ---- parameters: hot water ----
+ID_Einst_BWS_akt	Menu Trinkwarmwasser > Temperatur +/- > Wunschwert: desired hot water tank temperature, 30-65 °C in 0.5 °C steps. The controller regulates on "Deckung WP" (last temperature the heat pump actually reached) and reheats when it drops by the hysteresis.
+ID_Soll_BWS_akt	Hot water setpoint (raw /10 °C); usually mirrors ID_Einst_BWS_akt. Prefer ID_Einst_BWS_akt for changes.
+ID_Einst_BWS_Hyst_akt	Temperaturen > Hysterese WW: negative hysteresis for hot water in K (default 2 K); reheating starts at setpoint minus hysteresis.
+ID_Einst_Warmwasser_Nachheizung	Systemeinstellung > Trinkwarmwasser mit Nachheizung: if the heat pump cannot reach the target, the electric heater (ZWE) finishes the charge up to the Zieltemperatur. Raises energy cost.
+ID_Einst_WW_Nachheizung_max	Maximum duration in hours the electric reheating of hot water may run.
+ID_Einst_BwTDI_akt_MO	Trinkwarmwasser > Pflegeprogramm > Thermische Desinfektion: weekdays (MO..SO, AL = all) on which a legionella run to TDI-Solltemp is done.
+ID_Einst_TDC_Max_akt	Temperaturen > TDI-Solltemp.: target temperature of the thermal disinfection (legionella program).
+ID_Einst_Zirk_Ein_akt	Trinkwarmwasser > Pflegeprogramm > Zirkulation > Taktzeiten: circulation pump ON minutes per cycle.
+ID_Einst_Zirk_Aus_akt	Trinkwarmwasser > Pflegeprogramm > Zirkulation > Taktzeiten: circulation pump OFF minutes per cycle.
+ID_Einst_SUBW_akt2	Trinkwarmwasser > Zeitschaltprogramm: active hot water time program type; ID_Einst_SuBw*_zeit_* registers hold blocking periods (hot water is NOT prepared inside the programmed spans).
+ID_Einst_LGST_akt	Temperaturen > Max. Warmwassertemp.: upper limit for the hot water setpoint (raw /10 °C).
+# ---- parameters: cooling ----
+ID_Einst_KuehlFreig_akt	Kuehlung > Kuehlfreigabe > Freigabe ab Aussentemperatur: outdoor temperature above which cooling may start (with AT-Diff hysteresis and the release time ID_Einst_Kuhl_Zeit_Ein/Aus).
+ID_Sollwert_KuCft1_akt	Kuehlung > Temperaturen > Solltemperatur MK1: flow setpoint for cooling via mixing circuit 1 (lower limit = Min. VL Kuehlung, default 18 °C).
+ID_Sollwert_AtDif1_akt	Kuehlung > Temperaturen > AT-Diff MK1: outdoor temperature difference for switching cooling of mixing circuit 1 on/off.
+ID_Sollwert_KuCft2_akt	Cooling flow setpoint mixing circuit 2.
+ID_Sollwert_AtDif2_akt	Cooling outdoor difference mixing circuit 2.
+ID_Einst_Kuhl_Zeit_Ein_akt	Kuehlung > Parameter > Freigabe Zeit Ein: hours the outdoor temperature must exceed the release value before cooling starts.
+ID_Einst_Kuhl_Zeit_Aus_akt	Kuehlung > Parameter > Freigabe Zeit Aus: hours below the release value before cooling stops.
+ID_Einst_Akt_Kuehl_Freig_WQE_akt	Release of active cooling (only pumps with active cooling; SWC ...K3 has passive cooling).
+# ---- parameters: system / limits (installer level, not on the write allowlist) ----
+ID_Einst_TAbsMin_akt	Temperaturen > TAussen min: outdoor temperature below which the heat pump is blocked and ZWE takes over.
+ID_Einst_TWQmin_akt	Temperaturen > T-WQ min: minimum permitted brine (heat source) outlet temperature; below it the compressor stops (error 720 if repeatedly).
+ID_Einst_ZWEFreig_akt	Temperaturen > Freig. ZWE: outdoor temperature below which the electric backup heater may be released (bivalence point).
+ID_Einst_Freigabe_Zeit_ZWE	Delay in minutes after which the ZWE is released when the heat pump alone does not reach the setpoint.
+ID_Einst_ZWE1Art_akt	Systemeinstellung > ZWE1 Art: type of additional heat generator 1 (e.g. electric heating element).
+ID_Einst_ZWE1Fkt_akt	Systemeinstellung > ZWE1 Funktion: for heating / hot water / both.
+ID_Einst_Zugangscode	Service > Einstellungen > Datenzugang: current access level (user / installer 9445 / service). Do not write.
+ID_Einst_MK1Typ_akt	Systemeinstellung > Mischkreis 1: function of mixing circuit 1 (e.g. Entlade, Hz+Kuehl).
+ID_Einst_Popt_akt	Systemeinstellung > Pumpenoptimierung: heating pump optimisation (pump switches off when no request).
+ID_Einst_Popt_Nachlauf_akt	Pump run-on time in minutes after the compressor stops.
+ID_Einst_Effizienzpumpe_Nominal_akt	Service > Einstellungen > Effizienzpumpe: nominal flow / pump setting.
+SILENT_MODE	Service > Einstellungen > Silent Mode: reduced compressor/fan speed during the configured hours (ID_Einst_SilenceTimer_*).
+ID_Einst_SuSilence	Silent mode time program type.
+# ---- calculations: temperatures (Service > Informationen > Temperaturen) ----
+ID_WEB_Temperatur_TVL	Vorlauf: heating flow (supply) temperature leaving the heat pump.
+ID_WEB_Temperatur_TRL	Ruecklauf: heating return temperature; the heating curve regulates on the RETURN.
+ID_WEB_Sollwert_TRL_HZ	Rueckl.-Soll: current return setpoint computed from the heating curve, Temperatur +/- and night setback.
+ID_WEB_Temperatur_TRL_ext	Rueckl.-Extern: return temperature in the separation buffer (external return sensor), if installed.
+ID_WEB_Temperatur_THG	Heissgas: hot gas (compressor discharge) temperature; limited by T-HG max (error 704 if exceeded).
+ID_WEB_Temperatur_TA	Aussentemperatur: outdoor temperature sensor.
+ID_WEB_Mitteltemperatur	Mitteltemperatur: 24 h average outdoor temperature, used by the Heizgrenze (summer shutdown).
+ID_WEB_Temperatur_TBW	Warmwasser-Ist: hot water tank temperature. Reads 75 °C when no tank sensor is connected / hot water disabled.
+ID_WEB_Einst_BWS_akt	Warmwasser-Soll: active hot water setpoint.
+ID_WEB_Temperatur_TWE	Waermequelle-Ein: brine entering the heat pump (from the ground). Operating limit SWC: -5..25 °C.
+ID_WEB_Temperatur_TWA	Waermequelle-Aus: brine leaving the heat pump; T-WQ min protects against freezing.
+ID_WEB_Temperatur_TFB1	Mischkreis1-Vorlauf: flow temperature after mixer 1.
+ID_WEB_Sollwert_TVL_MK1	Mischkreis1 VL Soll: flow setpoint of mixing circuit 1.
+ID_WEB_Temperatur_TSK	Solarkollektor temperature (solar option).
+ID_WEB_Temperatur_TSS	Solarspeicher temperature (solar option).
+ID_WEB_Temperatur_TEE	Externe Energiequelle temperature (TEE option).
+ID_WEB_LIN_ANSAUG_VERDICHTER	Ansaug VD: compressor suction temperature (refrigerant circuit sensor via LIN bus).
+ID_WEB_LIN_ANSAUG_VERDAMPFER	Ansaug-Verdamp.: evaporator suction temperature.
+ID_WEB_LIN_VDH	VD-Heizung: compressor crankcase heater temperature.
+ID_WEB_LIN_UH	Ueberhitzung: suction superheat in K.
+ID_WEB_LIN_UH_Soll	Ueberhitzung Soll: superheat setpoint of the electronic expansion valve control.
+ID_WEB_LIN_HD	Hochdruck: refrigerant high pressure in bar (R410A on SWC ...3).
+ID_WEB_LIN_ND	Niederdruck: refrigerant low pressure in bar.
+Vapourisation_Temperature	Verdampfungstemp.: evaporation temperature derived from low pressure.
+Liquefaction_Temperature	Verfluessigungstemp.: condensation temperature derived from high pressure.
+# ---- calculations: state, outputs, inputs ----
+ID_WEB_WP_BZ_akt	Betriebszustand: what the heat pump is doing now (heating, hot water, swimming pool/solar, evu = utility lock, defrost, no request, heating external source, cooling).
+ID_WEB_HauptMenuStatus_Zeile1	Display status line 1: heatpump running / idle / coming / error / defrost / waiting on LIN / compressor heating up / pump forerun.
+ID_WEB_HauptMenuStatus_Zeile2	Display status line 2: "since" (running for) or "in" (starts in).
+ID_WEB_HauptMenuStatus_Zeile3	Display status line 3: cause of the current state (heating, no request, grid switch-on delay, cycle lock, lock time, domestic water, defrost, pump forerun, thermal desinfection, cooling, ...).
+ID_WEB_HauptMenuStatus_Zeit	Seconds belonging to status line 2 (running since / starts in).
+ID_WEB_VD1out	Ausgang Verdichter 1: compressor relay on/off.
+ID_WEB_HUPout	Ausgang HUP: heating circulation pump.
+ID_WEB_VBOout	Ausgang Ventil.-BOSUP: brine (Sole) circulation pump on SWC models.
+ID_WEB_BUPout	Ausgang BUP: hot water charging pump / diverter valve (heating <-> hot water).
+ID_WEB_ZIPout	Ausgang ZIP: hot water circulation pump.
+ID_WEB_ZUPout	Ausgang ZUP: additional circulation pump.
+ID_WEB_ZW1out	Ausgang ZWE 1: additional heat generator 1 (electric heating element).
+ID_WEB_ZW2SSTout	Ausgang ZWE 2 / Sammelstoerung: additional heat generator 2 or collective fault signal.
+ID_WEB_MZ1out	Mischer 1 Zu: mixer 1 closing.
+ID_WEB_MA1out	Mischer 1 Auf: mixer 1 opening.
+ID_WEB_EVUin	Eingang EVU: utility (Energieversorger) release signal; OFF = lock period, heat pump blocked.
+ID_WEB_ASDin	Eingang ASD: on S/W units flow switch / brine pressure switch; ON = flow or brine pressure OK.
+ID_WEB_HDin	Eingang HD: high pressure switch; OFF = pressure OK.
+ID_WEB_MOTin	Eingang MOT: motor protection; ON = OK.
+ID_WEB_BWTin	Eingang BWT: hot water thermostat request.
+HUP_PWM	HUP Leistung: heating circulation pump power in %.
+ID_WEB_Freq_VD	Freq. aktuell: compressor speed in Hz (inverter compressor).
+ID_WEB_Freq_VD_Soll	Freq. Sollwert: compressor target speed in Hz.
+ID_WEB_Freq_VD_Min	Freq. min.: minimum compressor speed.
+ID_WEB_Freq_VD_Max	Freq. max.: maximum compressor speed.
+ID_WEB_Code_WP_akt	Wärmepumpentyp code as detected by the controller (MSW 10 = Alterra SWC 102 series compact brine/water).
+ID_WEB_SoftStand	Software version of the Luxtronik controller (V3.92.x = Luxtronik 2.1).
+ID_WEB_AktuelleTimeStamp	Controller clock (Service > Einstellungen > Datum und Uhrzeit).
+# ---- calculations: errors, counters, energy ----
+ID_WEB_ERROR_Nr0	Fehlerspeicher entry 0 (newest) error code; see luxtronik_get_errors for manual text. Only the last five errors are stored.
+ID_WEB_ERROR_Time0	Timestamp of error memory entry 0 (newest).
+ID_WEB_AnzahlFehlerInSpeicher	Number of entries in the error memory (max 5).
+ID_WEB_Switchoff_file_Nr0	Abschaltungen entry 0: why the heat pump last switched off (no request, evu lock, heatpump error, flow rate, hot gas pause, ...). Note: switch-off timestamps count upwards, entry 4 may be the newest.
+ID_WEB_Zaehler_BetrZeitVD1	Betriebsstunden Verdichter 1 in seconds (divide by 3600 for hours).
+ID_WEB_Zaehler_BetrZeitImpVD1	Impulse Verdichter 1: number of compressor starts. Hours / starts = average run time; short cycling (< 15 min) indicates too little buffer or hysteresis.
+ID_WEB_Time_VDStd_akt	Laufzeit Ø VD1: average compressor run time in seconds.
+ID_WEB_Zaehler_BetrZeitWP	Betriebsstunden Waermepumpe (seconds).
+ID_WEB_Zaehler_BetrZeitHz	Betriebsstunden Heizung (seconds).
+ID_WEB_Zaehler_BetrZeitBW	Betriebsstunden Trinkwarmwasser (seconds).
+ID_WEB_Zaehler_BetrZeitKue	Betriebsstunden Kuehlung (seconds).
+ID_WEB_Zaehler_BetrZeitZWE1	Betriebsstunden ZWE 1: electric heater 1 run time in seconds; rising values in winter mean the heat pump alone cannot cover demand.
+ID_WEB_WMZ_Heizung	Waermemenge Heizung: heat meter, total heat delivered for heating in kWh (needs flow sensor).
+ID_WEB_WMZ_Brauchwasser	Waermemenge Trinkwarmwasser: heat delivered for hot water in kWh.
+ID_WEB_WMZ_Seit	Waermemenge seit: total heat since reset in kWh.
+ID_WEB_WMZ_Durchfluss	Durchfluss: heating circuit flow rate in l/h measured by the heat meter sensor (0 if no sensor / pump off).
+AC_Power_Input	Electrical power input of the inverter in W (if the inverter reports it).
+ID_WEB_Time_ZWE1_akt	ZWE 1 seit: seconds the additional heat generator 1 has been running.
+ID_WEB_Time_SSPAUS_akt	SSP-Zeit: cycle lock (Schaltspielsperre) remaining time in seconds, prevents compressor short cycling.
+ID_WEB_Time_HRM_akt	HRM-Zeit: heating controller "more" time (integral of under-temperature).
+ID_WEB_Time_HRW_akt	HRW-Zeit: heating controller "less" time.
+ID_WEB_Time_LGS_akt	Netzeinschaltverzoegerung: grid switch-on delay in seconds after power-up.
+ID_WEB_Time_AbtIn	Time until next defrost (air/water units only).
